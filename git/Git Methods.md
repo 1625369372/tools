@@ -18,7 +18,7 @@ brew upgrade git
 升级后更新shell配置
 
 ```bash
-source ~/.zshrc  # 如果使用 zsh  
+source ~/.zshrc  
 ```
 
 ### 安装和卸载
@@ -112,7 +112,6 @@ Push your local commits to GitHub:
 git push origin <branch-name>  
 ```
 
-Typically, the main branch is named `main` or `master`.
 
 ## 分支控制
 

@@ -272,3 +272,13 @@ jenv enable-plugin maven
 jenv enable-plugin gradle
 ```
 
+
+## VSCode
+
+### 切换/更改项目遇到编译错误
+
+a. 打开 VSCode。  
+b. 按下 `Ctrl+Shift+P`（Windows/Linux）或 `Cmd+Shift+P`（Mac）打开命令面板。  
+c. 输入 "Java: Clean Java Language Server Workspace"。  
+d. 选择此命令并执行。  
+e. VSCode 会提示你选择清理级别，通常选择 "Restart and delete"。
