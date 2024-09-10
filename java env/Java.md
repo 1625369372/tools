@@ -1,284 +1,193 @@
-# JDK环境配置
+# 环境配置
 
-## MAC上安装JDK
+## 安装
 
-<u>需要安装homebrew</u>
-
-### 安装和配置
-
-运行以下命令来安装最新版本的OpenJDK：
+1. 安装Homebrew（如果尚未安装）:
 
 ```bash
-brew update 
-brew install openjdk@22
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-安装完成后，您需要链接这个版本的Java，使其成为系统默认版本：
+2. 更新Homebrew:
 
 ```bash
-sudo ln -sfn $(brew --prefix)/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+brew update
 ```
 
-将Java路径添加到shell配置文件中，使用zsh编辑~/.zshrc文件。添加以下行：
+3. 安装JDK:
+
+安装最新版本：
 
 ```bash
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH" 
+brew install openjdk
 ```
 
-  重新加载配置文件：
+安装特定版本（例如JDK 11或8）：
 
 ```bash
-source ~/.zshrc
+brew install openjdk@11
+# 或
+brew install openjdk@8
 ```
 
-### 验证版本
+4. 链接JDK:
+
+首先创建必要的目录
+
+```bash
+sudo mkdir -p /Library/Java/JavaVirtualMachines/
+```
+
+链接最新版本：
+
+```bash
+sudo ln -sfn /usr/local/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk
+```
+
+链接特定版本（例如JDK 21）：
+
+```bash
+sudo ln -sfn /usr/local/opt/openjdk@11/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-21.jdk
+```
+
+5. 设置JAVA_HOME环境变量:
+
+打开你的shell配置文件（~/.zshrc），添加以下行：
+
+```bash
+nano ~/.zshrc
+```
+
+对于最新版本：
+
+```bash
+export JAVA_HOME=$(/usr/libexec/java_home)
+export PATH=$JAVA_HOME/bin:$PATH
+```
+
+对于特定版本（例如JDK 21）：
+
+```bash
+export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+export PATH=$JAVA_HOME/bin:$PATH
+```
+
+6. 使更改生效:
+
+```bash
+source ~/.zshrc  
+```
+
+7. 验证安装:
 
 ```bash
 java -version
+javac -version
 ```
 
-### 查询已安装的所有版本
+8. 管理多个Java版本:
 
-系统中所有版本：
+如果安装了多个版本，可以使用以下命令切换：
+
 ```bash
-/usr/libexec/java_home -V
+export JAVA_HOME=$(/usr/libexec/java_home -v 11)  # 切换到Java 11
+# 或
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)  # 切换到Java 8
 ```
 
-查看使用homebrew安装的版本：
+9. 更新JDK:
+
+定期运行以下命令来更新JDK：
 
 ```bash
-brew list --versions java
-```
-（特定版本）
-
-```bash
-brew list --versions openjdk@17
-```
-
-
-### 升级到最新版
-
-```bash
-brew upgrade openjdk
+brew update
+brew upgrade openjdk  # 更新最新版本
+# 或
+brew upgrade openjdk@11  # 更新特定版本
 ```
 
-### 删除旧版本
+## 卸载
 
+1. 卸载JDK
+
+卸载非特定版本（最新版本）：
 
 ```bash
-brew uninstall openjdk@17
+brew uninstall openjdk
+```
+
+卸载特定版本（例如JDK 21）：
+
+```bash
+brew uninstall openjdk@11
+```
+
+2. 移除符号链接
+
+对于非特定版本（最新版本）：
+
+```bash
+sudo rm -rf /Library/Java/JavaVirtualMachines/openjdk.jdk  
+```
+
+对于特定版本（例如JDK 21）：
+
+```bash
+sudo rm -rf /Library/Java/JavaVirtualMachines/openjdk-21.jdk   
+```
+
+3. 清理Homebrew缓存
+
+```bash
 brew cleanup
 ```
 
-注意要先删除jenv版本，再删除jdk
+4. 移除环境变量设置
 
-### 安装和配置特定版本的Java
-
-<span style="background:#d3f8b6"><u>eg. Java17</u></span>
-
-使用 Homebrew 安装特定版本的 JDK：
+编辑你的shell配置文件（~/.bash_profile 或 ~/.zshrc），删除或注释掉以下行：
 
 ```bash
-brew install openjdk@17  
+export JAVA_HOME=$(/usr/libexec/java_home)
+export PATH=$JAVA_HOME/bin:$PATH
 ```
 
-
-安装完成后，Homebrew 会显示一些信息，包括 JDK 的安装路径。通常，它会在 `/opt/homebrew/opt/openjdk@17` 目录下。
-
-创建一个符号链接，使系统能够找到这个 Java 版本（这步可选，但建议执行）：
+如果你为特定版本设置了JAVA_HOME，也要删除或注释掉这些行，例如：
 
 ```bash
-sudo ln -sfn /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
+export JAVA_HOME=$(/usr/libexec/java_home -v 21)
 ```
 
----
-
-## 使用`jenv`的Java版本管理
-
-### 注意事项
-
-- 每次安装新的 Java 版本后，都要记得用 `jenv add` 添加到 jenv。
-- 在项目根目录使用 `jenv local` 设置项目特定的 Java 版本是个好习惯。
-- 使用 `jenv doctor` 命令可以诊断常见的配置问题。
-
-
-### `jenv`的安装和配置
-
-安装 `jenv`：
+5. 重新加载shell配置
 
 ```bash
-brew install jenv
+source ~/.zshrc  # 如果使用zsh
 ```
 
-配置 shell：
-   将以下行添加到你的 shell 配置文件中：
-   
-   ```bash
-   export PATH="$HOME/.jenv/bin:$PATH"
-   eval "$(jenv init -)"
-   ```
+6. 验证卸载
 
-   然后重新加载配置文件：
-   
-   ```bash
-   source ~/.zshrc  # 或 source ~/.bash_profile
-   ```
-
-添加 Java 版本到 `jenv`：
-   对于每个你想管理的 Java 版本，运行以下命令：
-
-```bash
-jenv add /Library/Java/JavaVirtualMachines/openjdk-17.jdk/Contents/Home
-```
-
-   注意：路径可能因 Java 版本和安装方式而异。如果是用 Homebrew 安装的，路径通常是：
-   ```bash
-   jenv add /opt/homebrew/opt/openjdk@17
-   ```
-
-4. 查看已添加的版本：
-
-```bash
-jenv versions
-```
-
-5. 设置全局 Java 版本：
-
-```bash
-jenv global 17.0
-```
-
-### 查询`jenv`当前版本和所有可用版本
-
-
-```bash
-jenv versions
-```
-
-如果不知道system是什么版本可以使用
-```bash
-/usr/libexec/java_home -V
-```
-查询系统默认的
-
-### 将所有新版本/特定版本JDK添加到`jenv`
-
-所有版本
-```bash
-jenv add $(/usr/libexec/java_home)
-```
-
-or
-
-指定版本（<u>建议，不然会添加一堆重复的</u>）
-```bash
-jenv add /opt/homebrew/opt/openjdk@17
-# or jenv add /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home
-```
-
-添加后验证
-
-
-```bash
-jenv versions
-```
-
-
-### 更新 `jenv` 的可用 Java 版本：
-
-如果你安装了新的 Java 版本，需要刷新 jenv：
-
-```bash
-jenv refresh-versions
-```
-
-### 更新全局默认Java版本
-
-```bash
-jenv global 22.0.2 # or jenv global system 更改为系统默认
-```
-
-设置后需要刷新和验证
-
-
-```bash
-jenv rehash
-java -version
-```
-
-
-### 更新后重新配置和加载
-
-删除了旧版本的jdk和jenv之后刷新配置：
-```bash
-jenv rehash
-
-export PATH="$HOME/.jenv/bin:$PATH"  
-eval "$(jenv init -)"
-source ~/.zshrc  # 或 source ~/.bash_profile
-```
-
-### 更改后检查Java版本、`jenv`和JAVA_HOME是否全部一致
-
-
-```bash
-java -version  
-echo $JAVA_HOME  
-jenv versions
-```
-
-
-### 删除一个 Java 版本：
-
-如果你不再需要某个版本，可以这样删除：
-
-```bash
-jenv remove 11.0
-```
-
-注意要先删除jenv版本，再删除jdk
-
-### 更新特定目录 Java 版本：
-
-   进入项目目录，然后运行：
-
-```bash
-jenv local 11.0
-```
-   这会在当前目录创建一个 .java-version 文件。
-
-### 更新特定 shell 会话的 Java 版本：
-
-```bash
-jenv shell 17.0
-```
-
-8. 验证当前使用的 Java 版本：
+运行以下命令，确保Java已被卸载：
 
 ```bash
 java -version
+javac -version
 ```
 
-### 使用`jenv`自动设置和更新JAVA_MOME
+这些命令应该返回"command not found"错误。
 
-
-
-### 使用 `jenv` 管理 Maven 或 Gradle：
-
-如果你使用 Maven 或 Gradle，可以启用相应的插件：
+7. 清理系统Java缓存（可选）
 
 ```bash
-jenv enable-plugin maven
-jenv enable-plugin gradle
+sudo rm -rf /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin
+sudo rm -rf /Library/PreferencePanes/JavaControlPanel.prefPane
 ```
 
+8. 检查并删除任何剩余的Java相关文件（可选）
 
-## VSCode
+```bash
+sudo rm -rf /Library/Java
+sudo rm -rf ~/Library/Application\ Support/Oracle/Java
+```
 
-### 切换/更改项目遇到编译错误
+9. 如果你安装了多个版本，重复步骤1-3为每个版本执行卸载操作
 
-a. 打开 VSCode。  
-b. 按下 `Ctrl+Shift+P`（Windows/Linux）或 `Cmd+Shift+P`（Mac）打开命令面板。  
-c. 输入 "Java: Clean Java Language Server Workspace"。  
-d. 选择此命令并执行。  
-e. VSCode 会提示你选择清理级别，通常选择 "Restart and delete"。
+完成这些步骤后，你应该已经成功卸载了JDK并移除了所有相关配置。请注意，这些步骤会完全移除JDK，如果你之后需要使用Java，你需要重新安装。

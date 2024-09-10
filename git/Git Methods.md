@@ -112,6 +112,7 @@ Push your local commits to GitHub:
 git push origin <branch-name>  
 ```
 
+将`<branch-name>`替换为远程分支（main）
 
 ## 分支控制
 

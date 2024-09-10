@@ -1,27 +1,44 @@
-## python环境配置
-
-使用homebrew安装python
+1. 更新Homebrew：
 
 ```bash
-brew install python
+brew update
 ```
 
-验证安装：
+2. 安装Python：
 
 ```bash
-python3 --version  
-pip3 --version
+brew install python  
 ```
 
-更新 Python 和相关工具：
+这会安装最新版本的Python 3。
+
+3. 验证安装：
 
 ```bash
-brew update && brew upgrade python
+python3 --version   
+pip3 --version 
 ```
 
-设置 PYTHONPATH（如果需要）：  
-在 shell 配置文件中添加：
+4. 设置Python路径：  
+
+打开终端。使用nano打开.zshrc文件：
 
 ```bash
-export PYTHONPATH="/path/to/your/python/modules:$PYTHONPATH"  
+nano ~/.zshrc  
 ```
+
+使用箭头键导航到文件末尾，添加以下行：
+
+```bash
+export PATH="/usr/local/opt/python/libexec/bin:$PATH"  
+```
+
+完成编辑后，按 Ctrl + X保存并退出nano；当提示"Save modified buffer?"时，按 Y 确认保存；之后按 Enter 确认文件名
+
+重新加载.zshrc文件以使更改生效：
+
+```bash
+source ~/.zshrc
+```
+
+
