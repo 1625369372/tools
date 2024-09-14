@@ -102,17 +102,17 @@ git add .           # Add all changes
 
 Commit staged changes to your local repository:
 ```bash
-git commit -m "Describe your changes"  
+git commit -m "Describe your changes"
 ```
 
 ### 4. 将本地仓库提交到远程仓库
 
 Push your local commits to GitHub:
 ```bash
-git push origin <branch-name>  
+git push origin branch-name
 ```
 
-将`<branch-name>`替换为远程分支（main）
+将`branch-name`替换为远程分支（main）
 
 ## 分支控制
 
@@ -191,6 +191,13 @@ echo ".DS_Store" >> .gitignore
 echo "**/.DS_Store" >> .gitignore
 ```
 
+即使 `.DS_Store` 已经被添加到 `.gitignore` 中，Git 仍然会继续跟踪已经被提交的文件。因此，需要将其从 Git 的跟踪中移除，但保留在本地文件系统中。
+
+执行以下命令
+
+```zsh
+  git rm -r --cached .DS_Store
+```
 
 ##  查看提交历史
 
